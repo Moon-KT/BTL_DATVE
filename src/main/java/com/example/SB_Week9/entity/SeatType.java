@@ -1,8 +1,11 @@
 package com.example.SB_Week9.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Nationalized;
 
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -15,8 +18,17 @@ public class SeatType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seatTypeID;
+
+    @Nationalized
     private String seatTypeName;
 
+    private Double seatPrice;
+
     @OneToMany(mappedBy = "seatType", cascade = CascadeType.ALL)
-    private Set<Seat> seats;
+    @JsonIgnore
+    private List<Seat> seatList;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "room_id")
+    private ScreeningRoom room;
 }

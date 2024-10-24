@@ -3,6 +3,7 @@ package com.example.SB_Week9.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Nationalized;
 
 import java.util.List;
 
@@ -16,12 +17,18 @@ public class Location {
     @Id
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
     private Long locationID;
-    private String district;
+
+    @Nationalized
     private String city;
 
     @OneToMany(mappedBy = "location", cascade = CascadeType.ALL)
     @JsonIgnore
+    private List<District> districtList;
+
+    @OneToMany(mappedBy = "location", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Cinema> cinemaList;
+
 
 
 }

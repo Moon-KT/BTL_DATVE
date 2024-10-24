@@ -8,10 +8,10 @@ import java.util.List;
 
 @Service
 public interface ShowtimeService {
-    List<Showtime> getAllShowtimes();
-    Showtime getShowtimeById(Long showtimeID) throws Exception;
     Showtime create(ShowtimeDto showtimeDto) throws Exception;
+    Showtime read(Long showtimeID) throws Exception;
+    List<Showtime> reads();
     Showtime update(Long showtimeID, ShowtimeDto showtimeDto) throws Exception;
     void delete(Long showtimeID) throws Exception;
-    List<Showtime> getShowtimesByMovieId(Long movieId);
+
 }

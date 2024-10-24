@@ -10,8 +10,8 @@ import java.util.List;
 @Service
 public interface TicketService {
     Ticket create(TicketDto ticketDto) throws Exception;
-    List<Ticket> getAllTickets();
-    Ticket getTicketById(Long ticketID) throws Exception;
+    List<Ticket> reads();
+    Ticket read(Long ticketID) throws Exception;
     Ticket update(Long ticketID, TicketDto ticketDto) throws Exception;
     void delete(Long ticketID) throws Exception;
 }

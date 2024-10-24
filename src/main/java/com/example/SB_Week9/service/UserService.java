@@ -12,9 +12,8 @@ import java.util.Optional;
 @Service
 public interface UserService {
     User create(UserDto userDto) throws Exception;
-    List<User> getAllUsers();
-    User getUserById(Long userID) throws Exception;
-    User getUserByEmail(String email) throws Exception;
+    List<User> reads();
+    User read(Long userID) throws Exception;
     User update(Long userID, UserDto userDto) throws Exception;
     void delete(Long userID) throws Exception;
 }

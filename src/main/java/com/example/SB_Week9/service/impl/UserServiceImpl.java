@@ -30,19 +30,14 @@ public class UserServiceImpl implements UserService {
     }
 
         @Override
-        public List<User> getAllUsers () {
+        public List<User> reads () {
         return userRepository.findAll();
     }
 
-        public User getUserById (Long userID) throws Exception {
+        public User read (Long userID) throws Exception {
         return userRepository.findById(userID).orElseThrow(() -> {
             return new Exception("Không tìm thấy người dùng có ID :" + userID);
         });
-    }
-
-        @Override
-        public User getUserByEmail (String email) throws Exception {
-        return userRepository.findByEmail(email);
     }
 
         @Override

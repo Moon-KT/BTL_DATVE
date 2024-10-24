@@ -1,9 +1,12 @@
 package com.example.SB_Week9.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Nationalized;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -16,11 +19,18 @@ public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long paymentID;
+
+    @Nationalized
     private String paymentType;
-    private String transactionDate;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime transactionDate;
 
     @OneToMany(mappedBy = "payment", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Ticket> ticketList;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "card_id")
+    private BankCard bankCard;
 }

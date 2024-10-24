@@ -26,27 +26,26 @@ public class ShowtimeServiceImpl implements ShowtimeService {
     private MovieRepository movieRepository;
 
     @Override
-    public List<Showtime> getAllShowtimes() {
+    public List<Showtime> reads() {
         return showtimeRepository.findAll();
     }
 
     @Override
-    public Showtime getShowtimeById(Long showtimeID) throws Exception {
-        return showtimeRepository.findById(showtimeID)
-                .orElseThrow(() -> new Exception("Không tìm thấy suất chiếu có ID: " + showtimeID));
-    }
+    public Showtime read(Long showtimeID) throws Exception {
+        Optional<Showtime> showtime = Optional.ofNullable(showtimeRepository.findById(showtimeID))
+                .orElseThrow(() -> {
+                    return new Exception("Không tìm thấy suất chiếu có ID: " + showtimeID);
+                });
 
-    @Override
-    public List<Showtime> getShowtimesByMovieId(Long movieId) {
-        return showtimeRepository.findByMovieId(movieId);
+        return showtime.get();
     }
 
     @Override
     public Showtime create(ShowtimeDto showtimeDto) throws Exception {
         Optional<Movie> movie = Optional.ofNullable(movieRepository.findById(showtimeDto.getMovieID())
                 .orElseThrow(() -> new Exception("Không tìm thấy phim có ID: " + showtimeDto.getMovieID())));
-        Optional<ScreeningRoom> screeningRoom = Optional.ofNullable(screeningRoomRepository.findById(showtimeDto.getScreeningID())
-                .orElseThrow(() -> new Exception("Không tìm thấy phòng chiếu có ID: " + showtimeDto.getScreeningID())));
+        Optional<ScreeningRoom> screeningRoom = Optional.ofNullable(screeningRoomRepository.findById(showtimeDto.getRoomID())
+                .orElseThrow(() -> new Exception("Không tìm thấy phòng chiếu có ID: " + showtimeDto.getRoomID())));
 
         Showtime showtime = new Showtime();
         showtime.setStartTime(showtimeDto.getStartTime());
@@ -59,8 +58,8 @@ public class ShowtimeServiceImpl implements ShowtimeService {
     public Showtime update(Long showtimeID, ShowtimeDto showtimeDto) throws Exception {
         Optional<Movie> movie = Optional.ofNullable(movieRepository.findById(showtimeDto.getMovieID())
                 .orElseThrow(() -> new Exception("Không tìm thấy phim có ID: " + showtimeDto.getMovieID())));
-        Optional<ScreeningRoom> screeningRoom = Optional.ofNullable(screeningRoomRepository.findById(showtimeDto.getScreeningID())
-                .orElseThrow(() -> new Exception("Không tìm thấy phòng chiếu có ID: " + showtimeDto.getScreeningID())));
+        Optional<ScreeningRoom> screeningRoom = Optional.ofNullable(screeningRoomRepository.findById(showtimeDto.getRoomID())
+                .orElseThrow(() -> new Exception("Không tìm thấy phòng chiếu có ID: " + showtimeDto.getRoomID())));
 
         Optional<Showtime> showtime = Optional.ofNullable(showtimeRepository.findById(showtimeID))
                 .orElseThrow(() -> {

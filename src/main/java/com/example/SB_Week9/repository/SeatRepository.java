@@ -7,6 +7,5 @@ import java.util.List;
 import java.util.Optional;
 
 public interface SeatRepository extends JpaRepository<Seat,Long> {
-    List<Seat> findSeatsByRoomId(Long roomId);
-    Optional<Seat> getSeatByID(Long seatId);
+   // Optional<Seat> getSeatByID(Long seatId);
 }

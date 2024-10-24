@@ -2,12 +2,15 @@ package com.example.SB_Week9.dto;
 
 import jakarta.persistence.Entity;
 import lombok.*;
+import org.hibernate.annotations.Nationalized;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 public class CinemaDto {
-    private Long cinemaID;
+    @Nationalized
     private String cinemaName;
+
+    private Long locationID;
 }

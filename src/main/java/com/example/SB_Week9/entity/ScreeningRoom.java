@@ -1,8 +1,11 @@
 package com.example.SB_Week9.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Nationalized;
 
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -15,13 +18,19 @@ public class ScreeningRoom {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long roomID;
+
+    @Nationalized
     private String roomName;
+
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<SeatType> seatTypeList;
+
+    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Showtime> showtimeList;
 
     @ManyToOne
     @JoinColumn(name = "cinema_id")
     private Cinema cinema;
-
-    @OneToMany(mappedBy = "room", cascade = CascadeType.ALL)
-    private Set<Showtime> showtimes;
-
 }

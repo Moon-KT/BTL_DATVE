@@ -46,6 +46,7 @@ public class TicketServiceImpl implements TicketService {
         // Tạo đối tượng Ticket
         Ticket ticket = new Ticket();
         ticket.setBookingDate(ticketDto.getBookingDate());
+        ticket.setPrice(ticketDto.getPrice());
         ticket.setUser(user.get());  // Gán thông tin người dùng
         ticket.setPayment(payment.get());  // Gán thông tin thanh toán
         ticket.setShowtime(showtime.get());  // Gán suất chiếu
@@ -56,12 +57,12 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
-    public List<Ticket> getAllTickets() {
+    public List<Ticket> reads() {
         return ticketRepository.findAll();
     }
 
     @Override
-    public Ticket getTicketById(Long ticketID) throws Exception {
+    public Ticket read(Long ticketID) throws Exception {
         return ticketRepository.findById(ticketID).orElseThrow(() -> {
             return new Exception("Không tìm thấy vé có ID: " + ticketID);
         });
@@ -88,6 +89,7 @@ public class TicketServiceImpl implements TicketService {
 
         // Cập nhật các thuộc tính từ TicketDto
         ticket.get().setBookingDate(ticketDto.getBookingDate());
+        ticket.get().setPrice(ticketDto.getPrice());
         ticket.get().setUser(user.get());
         ticket.get().setPayment(payment.get());
         ticket.get().setShowtime(showtime.get());

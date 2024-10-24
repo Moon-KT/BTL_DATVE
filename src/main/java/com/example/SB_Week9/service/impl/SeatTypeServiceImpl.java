@@ -16,22 +16,25 @@ public class SeatTypeServiceImpl implements SeatTypeService {
     private SeatTypeRepository seatTypeRepository;
 
     @Override
-    public List<SeatType> getAllSeatTypes() throws Exception {
+    public SeatType create(SeatTypeDto seatTypeDto) throws Exception {
+        SeatType seatType = new SeatType();
+
+        seatType.setSeatTypeName(seatTypeDto.getSeatTypeName());
+        seatType.setSeatPrice(seatTypeDto.getSeatPrice());
+
+        return seatTypeRepository.save(seatType);
+    }
+
+    @Override
+    public List<SeatType> reads(){
         return seatTypeRepository.findAll();
     }
 
     @Override
-    public SeatType getSeatTypeById(Long seatTypeId) throws Exception {
+    public SeatType read(Long seatTypeId) throws Exception {
         return seatTypeRepository.findById(seatTypeId)
                 .orElseThrow(() -> { return new Exception("Không tìm thấy loại ghế có ID: " + seatTypeId);
                 });
-    }
-
-    @Override
-    public SeatType create(SeatTypeDto seatTypeDto) throws Exception {
-        SeatType seatType = new SeatType();
-        seatType.setSeatTypeName(seatTypeDto.getSeatTypeName());
-        return seatTypeRepository.save(seatType);
     }
 
     @Override

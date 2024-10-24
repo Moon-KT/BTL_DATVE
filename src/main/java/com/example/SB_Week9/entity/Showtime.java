@@ -1,9 +1,11 @@
 package com.example.SB_Week9.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 @Getter
 @Setter
@@ -16,7 +18,12 @@ public class Showtime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long showtimeID;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime startTime;
+
+    @OneToMany(mappedBy = "showtime", cascade = CascadeType.ALL)
+    private List<Ticket> ticketList;
 
     @ManyToOne
     @JoinColumn(name = "room_id")
@@ -26,6 +33,5 @@ public class Showtime {
     @JoinColumn(name = "movie_id")
     private Movie movie;
 
-    @OneToMany(mappedBy = "showtime")
-    private Set<Seat> seats;
+
 }

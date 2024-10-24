@@ -1,5 +1,7 @@
 package com.example.SB_Week9.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -17,7 +19,18 @@ public class Ticket {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long ticketID;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime bookingDate;
+
+    private double price;
+    @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Ticket_ComboOffer> ticket_comboOfferList;
+
+    @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Ticket_Promotion> ticket_promotionList;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -34,21 +47,4 @@ public class Ticket {
     @ManyToOne
     @JoinColumn(name = "payment_id")
     private Payment payment;
-
-    @ManyToMany
-    @JoinTable(
-            name = "ticket_combo_offer",
-            joinColumns = @JoinColumn(name = "ticket_id"),
-            inverseJoinColumns = @JoinColumn(name = "combo_id")
-    )
-    private List<ComboOffer> comboOffers;
-
-    @ManyToMany
-    @JoinTable(
-            name = "ticket_promotion",
-            joinColumns = @JoinColumn(name = "ticket_id"),
-            inverseJoinColumns = @JoinColumn(name = "promotion_id")
-    )
-    private List<Promotion> promotions;
-
 }
