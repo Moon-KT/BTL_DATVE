@@ -6,7 +6,6 @@ import lombok.*;
 import org.hibernate.annotations.Nationalized;
 
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -17,6 +16,8 @@ import java.util.Set;
 public class ScreeningRoom {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+
+    @Column(name = "room_id")
     private Long roomID;
 
     @Nationalized

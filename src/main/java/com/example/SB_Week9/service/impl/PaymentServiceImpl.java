@@ -1,9 +1,7 @@
 package com.example.SB_Week9.service.impl;
 
 import com.example.SB_Week9.dto.PaymentDto;
-import com.example.SB_Week9.entity.BankCard;
 import com.example.SB_Week9.entity.Payment;
-import com.example.SB_Week9.repository.BankCardRepository;
 import com.example.SB_Week9.repository.PaymentRepository;
 import com.example.SB_Week9.service.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,15 +15,11 @@ public class PaymentServiceImpl implements PaymentService {
     @Autowired
     private PaymentRepository paymentRepository;
 
-    @Autowired
-    private BankCardRepository bankCardRepository;
-
     @Override
     public Payment create(PaymentDto paymentDto) throws Exception {
         Payment payment = new Payment();
         payment.setPaymentType(paymentDto.getPaymentType());
         payment.setTransactionDate(paymentDto.getTransactionDate());
-        payment.setBankCard(bankCardRepository.findById(paymentDto.getCardID()).get());
         return paymentRepository.save(payment);
     }
 
@@ -51,7 +45,6 @@ public class PaymentServiceImpl implements PaymentService {
         }
         payment.get().setPaymentType(paymentDto.getPaymentType());
         payment.get().setTransactionDate(paymentDto.getTransactionDate());
-        payment.get().setBankCard(bankCardRepository.findById(paymentDto.getCardID()).get());
 
         return paymentRepository.save(payment.get());
     }

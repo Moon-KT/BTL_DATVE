@@ -1,20 +1,19 @@
 package com.example.SB_Week9.entity;
 
+import com.example.SB_Week9.entity.key.TicketComboOfferKey;
 import jakarta.persistence.*;
-
-import java.util.List;
 
 @Entity
 @Table(name = "ticket_combo_offer")
 public class Ticket_ComboOffer {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EmbeddedId
+    private TicketComboOfferKey id;
 
     @ManyToOne
-    @JoinColumn(name = "ticket_id")
+    @JoinColumn(name = "ticket_id", insertable = false, updatable = false)
     private Ticket ticket;
 
     @ManyToOne
-    @JoinColumn(name = "combo_id")
+    @JoinColumn(name = "combo_id", insertable = false, updatable = false)
     private ComboOffer comboOffer;
 }

@@ -10,9 +10,8 @@ import org.hibernate.annotations.Nationalized;
 @Setter
 
 public class SeatDto {
+    private String seatRow;
     private int seatNumber;
-
-    @Nationalized
     private String status;
 
     private Long showtimeID;

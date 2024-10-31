@@ -1,5 +1,6 @@
 package com.example.SB_Week9.service;
 
+import com.example.SB_Week9.dto.TicketDto;
 import com.example.SB_Week9.dto.UserDto;
 import com.example.SB_Week9.entity.User;
 import com.example.SB_Week9.repository.UserRepository;
@@ -16,4 +17,7 @@ public interface UserService {
     User read(Long userID) throws Exception;
     User update(Long userID, UserDto userDto) throws Exception;
     void delete(Long userID) throws Exception;
+    boolean register(UserDto userDto) throws Exception;
+    User login(UserDto userDto) throws Exception;
+    List<TicketDto> getBookingHistory(Long userID);
 }

@@ -11,6 +11,9 @@ import org.hibernate.annotations.Nationalized;
 public class CinemaDto {
     @Nationalized
     private String cinemaName;
+    private String hotline;
+    @Nationalized
+    private String detailedAddress;
 
     private Long locationID;
 }

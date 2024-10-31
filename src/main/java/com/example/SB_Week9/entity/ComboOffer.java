@@ -19,6 +19,8 @@ import java.util.Set;
 public class ComboOffer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+
+    @Column(name = "combo_id")
     private Long comboID;
 
     @Nationalized
@@ -26,7 +28,7 @@ public class ComboOffer {
     private String comboDescription;
 
     private String imageCombo;
-    private double price;
+    private Double price;
 
     @OneToMany(mappedBy = "comboOffer", cascade = CascadeType.ALL)
     private List<Ticket_ComboOffer> ticket_comboOfferList;

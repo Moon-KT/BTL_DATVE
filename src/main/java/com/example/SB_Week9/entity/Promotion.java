@@ -5,8 +5,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Nationalized;
-import org.springframework.cglib.core.Local;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -19,6 +17,8 @@ import java.util.List;
 public class Promotion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+
+    @Column(name = "promotion_id")
     private Long promotionID;
 
     @Nationalized
@@ -27,6 +27,7 @@ public class Promotion {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime promotionStartDate;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime promotionEndDate;
 

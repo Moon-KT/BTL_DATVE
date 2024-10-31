@@ -4,11 +4,14 @@ import com.example.SB_Week9.dto.TicketDto;
 import com.example.SB_Week9.entity.*;
 import com.example.SB_Week9.repository.*;
 import com.example.SB_Week9.service.TicketService;
+import com.example.SB_Week9.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class TicketServiceImpl implements TicketService {
@@ -31,16 +34,16 @@ public class TicketServiceImpl implements TicketService {
     @Override
     public Ticket create(TicketDto ticketDto) throws Exception {
         // Lấy thông tin từ TicketDto và kiểm tra sự tồn tại của các thành phần liên quan
-        Optional<User> user = Optional.ofNullable( userRepository.findById(ticketDto.getUserID())
+        Optional<User> user = Optional.ofNullable(userRepository.findById(ticketDto.getUserID())
                 .orElseThrow(() -> new Exception("Không tìm thấy người dùng có ID: " + ticketDto.getUserID())));
 
-        Optional<Payment> payment = Optional.ofNullable( paymentRepository.findById(ticketDto.getPaymentID())
+        Optional<Payment> payment = Optional.ofNullable(paymentRepository.findById(ticketDto.getPaymentID())
                 .orElseThrow(() -> new Exception("Không tìm thấy thông tin thanh toán có ID: " + ticketDto.getPaymentID())));
 
-        Optional<Showtime> showtime = Optional.ofNullable( showtimeRepository.findById(ticketDto.getShowtimeID())
+        Optional<Showtime> showtime = Optional.ofNullable(showtimeRepository.findById(ticketDto.getShowtimeID())
                 .orElseThrow(() -> new Exception("Không tìm thấy suất chiếu có ID: " + ticketDto.getShowtimeID())));
 
-        Optional<Seat> seat = Optional.ofNullable( seatRepository.findById(ticketDto.getSeatID())
+        Optional<Seat> seat = Optional.ofNullable(seatRepository.findById(ticketDto.getSeatID())
                 .orElseThrow(() -> new Exception("Không tìm thấy ghế có ID: " + ticketDto.getSeatID())));
 
         // Tạo đối tượng Ticket
@@ -70,16 +73,16 @@ public class TicketServiceImpl implements TicketService {
 
     @Override
     public Ticket update(Long ticketID, TicketDto ticketDto) throws Exception {
-        Optional<User> user = Optional.ofNullable( userRepository.findById(ticketDto.getUserID())
+        Optional<User> user = Optional.ofNullable(userRepository.findById(ticketDto.getUserID())
                 .orElseThrow(() -> new Exception("Không tìm thấy người dùng có ID: " + ticketDto.getUserID())));
 
-        Optional<Payment> payment = Optional.ofNullable( paymentRepository.findById(ticketDto.getPaymentID())
+        Optional<Payment> payment = Optional.ofNullable(paymentRepository.findById(ticketDto.getPaymentID())
                 .orElseThrow(() -> new Exception("Không tìm thấy thông tin thanh toán có ID: " + ticketDto.getPaymentID())));
 
-        Optional<Showtime> showtime = Optional.ofNullable( showtimeRepository.findById(ticketDto.getShowtimeID())
+        Optional<Showtime> showtime = Optional.ofNullable(showtimeRepository.findById(ticketDto.getShowtimeID())
                 .orElseThrow(() -> new Exception("Không tìm thấy suất chiếu có ID: " + ticketDto.getShowtimeID())));
 
-        Optional<Seat> seat = Optional.ofNullable( seatRepository.findById(ticketDto.getSeatID())
+        Optional<Seat> seat = Optional.ofNullable(seatRepository.findById(ticketDto.getSeatID())
                 .orElseThrow(() -> new Exception("Không tìm thấy ghế có ID: " + ticketDto.getSeatID())));
 
 

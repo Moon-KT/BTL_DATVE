@@ -2,8 +2,12 @@ package com.example.SB_Week9.service.impl;
 
 import com.example.SB_Week9.dto.MovieDto;
 import com.example.SB_Week9.entity.Movie;
+import com.example.SB_Week9.entity.ScreeningRoom;
 import com.example.SB_Week9.repository.MovieRepository;
+import com.example.SB_Week9.repository.ScreeningRoomRepository;
+import com.example.SB_Week9.repository.ShowtimeRepository;
 import com.example.SB_Week9.service.MovieService;
+import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +18,10 @@ import java.util.Optional;
 public class MovieServiceImpl implements MovieService {
     @Autowired
     private MovieRepository movieRepository;
-
+    @Autowired
+    private ScreeningRoomRepository screeningRoomRepository;
+    @Autowired
+    private ShowtimeRepository showtimeRepository;
 
     @Override
     public Movie create(MovieDto movieDto) throws Exception {

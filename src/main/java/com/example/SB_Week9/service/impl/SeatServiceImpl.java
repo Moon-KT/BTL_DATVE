@@ -33,6 +33,7 @@ public class SeatServiceImpl implements SeatService {
 
         Seat seat = new Seat();
         seat.setSeatNumber(seatDto.getSeatNumber());
+        seat.setSeatRow(seatDto.getSeatRow());
         seat.setStatus(seatDto.getStatus());
         seat.setSeatType(seatType.get());
         seat.setScreeningRoom(screeningRoomRepository.findById(seatDto.getSeatTypeID()).get());
@@ -64,6 +65,7 @@ public class SeatServiceImpl implements SeatService {
                 .orElseThrow(() -> { return new Exception("Không tìm thấy loại ghế có ID: " + seatDto.getSeatTypeID());}));
 
         seat.get().setSeatNumber(seatDto.getSeatNumber());
+        seat.get().setSeatRow(seatDto.getSeatRow());
         seat.get().setStatus(seatDto.getStatus());
         seat.get().setSeatType(seatType.get());
         seat.get().setScreeningRoom(screeningRoomRepository.findById(seatDto.getSeatTypeID()).get());

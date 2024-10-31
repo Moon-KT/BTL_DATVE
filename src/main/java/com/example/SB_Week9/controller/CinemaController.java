@@ -23,6 +23,16 @@ public class CinemaController {
         return ResponseEntity.ok().body(cinemaService.read(id));
     }
 
+    @GetMapping("/{cinemaID}/rooms")
+    public ResponseEntity<?> getRoomByCinema(@PathVariable Long cinemaID) throws Exception{
+        return ResponseEntity.ok().body(cinemaService.getRoomByCinema(cinemaID));
+    }
+
+    @GetMapping("/{cinemaID}/movies")
+    public ResponseEntity<?> getMovieByCinema(@PathVariable Long cinemaID) throws Exception{
+        return ResponseEntity.ok().body(cinemaService.getMovieByCinema(cinemaID));
+    }
+
     @PostMapping("/create")
     public ResponseEntity<?> create(@RequestBody CinemaDto cinemaDto) throws Exception{
         return ResponseEntity.ok().body(cinemaService.create(cinemaDto));

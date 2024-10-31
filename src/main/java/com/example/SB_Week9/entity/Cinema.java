@@ -16,10 +16,19 @@ import java.util.List;
 public class Cinema {
     @Id
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
+
+    @Column(name = "cinema_id")
     private Long cinemaID;
 
     @Nationalized
     private String cinemaName;
+
+    @Column(length = 11)
+    private String hotline;
+
+    @Nationalized
+    @Column(length = 600)
+    private String detailedAddress;
 
     @ManyToOne
     @JoinColumn(name = "location_id")

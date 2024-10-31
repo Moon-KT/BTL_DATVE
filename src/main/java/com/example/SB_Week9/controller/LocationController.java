@@ -23,7 +23,10 @@ public class LocationController {
     public ResponseEntity<?> read(@PathVariable Long id) throws Exception{
         return ResponseEntity.ok().body(locationService.read(id));
     }
-
+    @GetMapping("/{locationID}/cinemas")
+    public ResponseEntity<?> getCinemaByLocation(@PathVariable Long locationID) throws Exception{
+        return ResponseEntity.ok().body(locationService.getCinemaByLocation(locationID));
+    }
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@PathVariable Long id,
                                     @RequestBody LocationDto locationDto) throws Exception{

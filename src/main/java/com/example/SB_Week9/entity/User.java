@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 @Getter
 @Setter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -19,19 +18,25 @@ import java.util.List;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
     private Long userID;
 
     @Nationalized
+    @Column(name = "user_name", unique = true, length = 50)
     private String username;
 
     private String email;
+
+    @Column(length = 25)
     private String password;
+
+    @Column(length = 11)
     private String phone;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDateTime birthday;
 
-    @Check(constraints = "gender in ('female', 'male', 'rather not say')")
+    @Check(constraints = "gender in ('Nam', 'Nữ', 'Khác')")
     private String gender;
 
     @Nationalized

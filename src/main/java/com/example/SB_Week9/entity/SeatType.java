@@ -17,6 +17,8 @@ import java.util.Set;
 public class SeatType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+
+    @Column(name = "seat_type_id")
     private Long seatTypeID;
 
     @Nationalized

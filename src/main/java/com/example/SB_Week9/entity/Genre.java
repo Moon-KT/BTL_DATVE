@@ -3,9 +3,7 @@ package com.example.SB_Week9.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Nationalized;
-
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -16,6 +14,8 @@ import java.util.Set;
 public class Genre {
     @Id
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
+
+    @Column(name = "genre_id")
     private Long genreID;
 
     @Nationalized

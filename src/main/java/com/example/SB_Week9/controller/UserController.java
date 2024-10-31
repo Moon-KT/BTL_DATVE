@@ -19,12 +19,27 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> read(@PathVariable long id) throws Exception{
-        return ResponseEntity.ok().body(userService.getUserById(id));
+        return ResponseEntity.ok().body(userService.read(id));
     }
 
-    @PostMapping
+    @GetMapping("history/{userID}")
+    public ResponseEntity<?> getBookingHistory(@PathVariable long userID) throws Exception {
+        return ResponseEntity.ok().body(userService.getBookingHistory(userID));
+    }
+
+    @PostMapping("/create")
     public ResponseEntity<?> create(@RequestBody UserDto userDto) throws Exception{
         return ResponseEntity.ok().body(userService.create(userDto));
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@RequestBody UserDto userDto) throws Exception{
+        return ResponseEntity.ok().body(userService.register(userDto));
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody UserDto userDto) throws Exception{
+        return ResponseEntity.ok().body(userService.login(userDto));
     }
 
     @PutMapping("/{id}")

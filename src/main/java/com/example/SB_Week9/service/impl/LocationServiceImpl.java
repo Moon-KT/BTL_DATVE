@@ -1,6 +1,8 @@
 package com.example.SB_Week9.service.impl;
 
+import com.example.SB_Week9.dto.CinemaDto;
 import com.example.SB_Week9.dto.LocationDto;
+import com.example.SB_Week9.entity.Cinema;
 import com.example.SB_Week9.entity.Location;
 import com.example.SB_Week9.repository.LocationRepository;
 import com.example.SB_Week9.service.LocationService;
@@ -49,5 +51,10 @@ public class LocationServiceImpl implements LocationService {
                 .orElseThrow(() -> { return new Exception("Không tìm thấy địa điểm có ID: " + locationID);
                 });
         locationRepository.delete(locationOptional.get());
+    }
+
+    @Override
+    public List<Cinema> getCinemaByLocation(Long locationID) {
+        return locationRepository.findById(locationID).get().getCinemaList();
     }
 }

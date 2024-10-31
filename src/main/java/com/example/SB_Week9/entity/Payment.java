@@ -18,6 +18,8 @@ import java.util.List;
 public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+
+    @Column(name = "payment_id")
     private Long paymentID;
 
     @Nationalized
@@ -30,7 +32,4 @@ public class Payment {
     @JsonIgnore
     private List<Ticket> ticketList;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "card_id")
-    private BankCard bankCard;
 }

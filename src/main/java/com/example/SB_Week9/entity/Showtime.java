@@ -11,12 +11,13 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @Entity
 @Table(name = "showtimes")
 public class Showtime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+
+    @Column(name = "showtime_id")
     private Long showtimeID;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
@@ -32,6 +33,4 @@ public class Showtime {
     @ManyToOne
     @JoinColumn(name = "movie_id")
     private Movie movie;
-
-
 }
