@@ -11,6 +11,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder(toBuilder = true)
 @Entity
 @Table(name = "showtimes")
 public class Showtime {
@@ -24,7 +25,7 @@ public class Showtime {
     private LocalDateTime startTime;
 
     @OneToMany(mappedBy = "showtime", cascade = CascadeType.ALL)
-    private List<Ticket> ticketList;
+    private List<Booking> bookings;
 
     @ManyToOne
     @JoinColumn(name = "room_id")

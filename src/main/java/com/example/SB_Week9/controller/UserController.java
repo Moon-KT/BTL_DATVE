@@ -9,8 +9,12 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
+    private final UserService userService;
+
     @Autowired
-    private UserService userService;
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @GetMapping
     public ResponseEntity<?> reads(){
@@ -30,16 +34,6 @@ public class UserController {
     @PostMapping("/create")
     public ResponseEntity<?> create(@RequestBody UserDto userDto) throws Exception{
         return ResponseEntity.ok().body(userService.create(userDto));
-    }
-
-    @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody UserDto userDto) throws Exception{
-        return ResponseEntity.ok().body(userService.register(userDto));
-    }
-
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody UserDto userDto) throws Exception{
-        return ResponseEntity.ok().body(userService.login(userDto));
     }
 
     @PutMapping("/{id}")

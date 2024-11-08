@@ -15,43 +15,49 @@ public class SeatTypeServiceImpl implements SeatTypeService {
     @Autowired
     private SeatTypeRepository seatTypeRepository;
 
+    private SeatTypeDto convertToDto(SeatType seatType) {
+        return SeatTypeDto.builder()
+                .seatTypeName(seatType.getSeatTypeName())
+                .seatPrice(seatType.getSeatPrice())
+                .build();
+    }
     @Override
-    public SeatType create(SeatTypeDto seatTypeDto) throws Exception {
-        SeatType seatType = new SeatType();
-
-        seatType.setSeatTypeName(seatTypeDto.getSeatTypeName());
-        seatType.setSeatPrice(seatTypeDto.getSeatPrice());
-
-        return seatTypeRepository.save(seatType);
+    public SeatTypeDto create(SeatTypeDto seatTypeDto) throws Exception {
+        SeatType seatType = SeatType.builder()
+                .seatTypeName(seatTypeDto.getSeatTypeName())
+                .seatPrice(seatTypeDto.getSeatPrice())
+                .build();
+        return convertToDto(seatTypeRepository.save(seatType));
     }
 
     @Override
-    public List<SeatType> reads(){
-        return seatTypeRepository.findAll();
+    public List<SeatTypeDto> reads(){
+        return seatTypeRepository.findAll().stream().map(this::convertToDto).toList();
     }
 
     @Override
-    public SeatType read(Long seatTypeId) throws Exception {
+    public SeatTypeDto read(Long seatTypeId) throws Exception {
         return seatTypeRepository.findById(seatTypeId)
-                .orElseThrow(() -> { return new Exception("Không tìm thấy loại ghế có ID: " + seatTypeId);
-                });
+                .map(this::convertToDto)
+                .orElseThrow(() -> new Exception("Không tìm thấy loại ghế có ID: " + seatTypeId));
     }
 
     @Override
-    public SeatType update(Long seatTypeId, SeatTypeDto seatTypeDto) throws Exception {
-        Optional<SeatType> seatType = Optional.ofNullable(seatTypeRepository.findById(seatTypeId))
-                .orElseThrow(() -> { return new Exception("Không tìm thấy loại ghế có ID: " + seatTypeId);
-                });
-        seatType.get().setSeatTypeName(seatTypeDto.getSeatTypeName());
-
-        return seatType.get();
+    public SeatTypeDto update(Long seatTypeId, SeatTypeDto seatTypeDto) throws Exception {
+        SeatType seatType = seatTypeRepository.findById(seatTypeId)
+                .orElseThrow(() -> new Exception("Không tìm thấy loại ghế có ID: " + seatTypeId));
+        seatType.toBuilder()
+                .seatTypeName(seatTypeDto.getSeatTypeName())
+                .seatPrice(seatTypeDto.getSeatPrice())
+                .build();
+        return convertToDto(seatTypeRepository.save(seatType));
     }
 
     @Override
     public void delete(Long seatTypeId) throws Exception {
-        Optional<SeatType> seatType = Optional.ofNullable(seatTypeRepository.findById(seatTypeId))
-                .orElseThrow(() -> { return new Exception("Không tìm thấy loại ghế có ID: " + seatTypeId);
-                });
-        seatTypeRepository.delete(seatType.get());
+        if(!seatTypeRepository.existsById(seatTypeId)){
+            throw new Exception("Không tìm thấy loại ghế có ID: " + seatTypeId);
+        }
+        seatTypeRepository.deleteById(seatTypeId);
     }
 }

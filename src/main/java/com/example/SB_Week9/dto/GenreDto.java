@@ -4,11 +4,10 @@ import jakarta.persistence.Entity;
 import lombok.*;
 import org.hibernate.annotations.Nationalized;
 
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
+@Builder
 public class GenreDto {
-    @Nationalized
     private String genreName;
 }

@@ -7,11 +7,10 @@ import lombok.*;
 import org.hibernate.annotations.Nationalized;
 
 import java.time.LocalDateTime;
-
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
+@Builder
 public class MovieDto {
     @Nationalized
     private String movieName;

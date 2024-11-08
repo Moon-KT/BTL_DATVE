@@ -1,121 +1,141 @@
 package com.example.SB_Week9.service.impl;
 
+import com.example.SB_Week9.dto.BookingRequest;
+import com.example.SB_Week9.dto.SeatDto;
 import com.example.SB_Week9.dto.TicketDto;
 import com.example.SB_Week9.dto.UserDto;
-import com.example.SB_Week9.entity.Ticket;
+import com.example.SB_Week9.entity.Booking_Seat;
+import com.example.SB_Week9.entity.Seat;
+import com.example.SB_Week9.entity.Showtime;
 import com.example.SB_Week9.entity.User;
+import com.example.SB_Week9.entity.enumModel.UserRole;
 import com.example.SB_Week9.repository.UserRepository;
 import com.example.SB_Week9.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
-@Service
-public class UserServiceImpl implements UserService {
-    @Autowired
-    private UserRepository userRepository;
+@Component
+public class UserServiceImpl implements UserService, UserDetailsService {
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-//    @Autowired
-//    private PasswordEncoder passwordEncoder;
+    @Autowired
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    private UserDto convertToDto(User user) {
+        return UserDto.builder()
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .phone(user.getPhone())
+                .address(user.getAddress())
+                .gender(user.getGender())
+                .birthday(user.getBirthday())
+                .build();
+    }
 
     @Override
-    public User create (UserDto userDto) throws Exception {
-        User user = new User();
-        user.setUsername(userDto.getUsername());
-        user.setEmail(userDto.getEmail());
-        user.setPhone(userDto.getPhone());
-        user.setAddress(userDto.getAddress());
-        user.setGender(userDto.getGender());
-        user.setBirthday(userDto.getBirthday());
-        user.setRole(userDto.getRole());
-        return userRepository.save(user);
+    public UserDto create (UserDto userDto) throws Exception {
+        User user = User.builder()
+                .username(userDto.getUsername())
+                .email(userDto.getEmail())
+                .password(userDto.getPassword())
+                .phone(userDto.getPhone())
+                .address(userDto.getAddress())
+                .gender(userDto.getGender())
+                .birthday(userDto.getBirthday())
+                .role(UserRole.admin)
+                .build();
+        return convertToDto(userRepository.save(user));
     }
 
         @Override
-        public List<User> reads () {
-            return userRepository.findAll();
+        public List<UserDto> reads () {
+            return userRepository.findAll().stream().map(this::convertToDto).collect(Collectors.toList());
     }
 
-        public User read (Long userID) throws Exception {
-            return userRepository.findById(userID).orElseThrow(() -> {
-                return new Exception("Không tìm thấy người dùng có ID :" + userID);
+        public UserDto read (Long userID) throws Exception {
+            return userRepository.findById(userID).map(this::convertToDto).orElseThrow(() -> {
+                return new Exception("Người dùng không tồn tại");
         });
     }
 
         @Override
-        public User update (Long userID, UserDto userDto) throws Exception {
-            Optional<User> user = Optional.ofNullable(userRepository.findById(userID).orElseThrow(() -> {
-                return new Exception("Not thay! ");
-            }));
+        public UserDto update (Long userID, UserDto userDto) throws Exception {
+            User existingUser = userRepository.findById(userID).orElseThrow(() -> {
+                return new Exception("Người dùng không tồn tại");
+            });
 
-            user.get().setUsername(userDto.getUsername());
-            user.get().setEmail(userDto.getEmail());
-            user.get().setPhone(userDto.getPhone());
-            user.get().setAddress(userDto.getAddress());
-            user.get().setGender(userDto.getGender());
-            user.get().setBirthday(userDto.getBirthday());
-
-            return userRepository.save(user.get());
+            User updatedUser = existingUser.toBuilder()
+                    .username(userDto.getUsername())
+                    .email(userDto.getEmail())
+                    .password(userDto.getPassword())
+                    .phone(userDto.getPhone())
+                    .address(userDto.getAddress())
+                    .birthday(userDto.getBirthday())
+                    .build();
+            return convertToDto(userRepository.save(updatedUser));
     }
 
         @Override
         public void delete (Long userID) throws Exception {
-            Optional<User> user = Optional.ofNullable(userRepository.findById(userID).orElseThrow(() -> {
-                return new Exception("Not thay! ");
-             }));
-
+            if(!userRepository.existsById(userID)) {
+                throw new Exception("Người dùng không tồn tại");
+            }
             userRepository.deleteById(userID);
     }
 
     @Override
-    public boolean register (UserDto userDto) throws Exception {
-        if(userRepository.findByEmail(userDto.getEmail()) != null) {
-            throw new Exception("Email đã tồn tại");
-        }
-        User user = new User();
-        user.setUsername(userDto.getUsername());
-        user.setEmail(userDto.getEmail());
-        user.setPhone(userDto.getPhone());
-        user.setAddress(userDto.getAddress());
-        user.setGender(userDto.getGender());
-        user.setBirthday(userDto.getBirthday());
-        user.setRole("user");
+    public List<BookingRequest> getBookingHistory(Long userID) throws Exception {
+        User user = userRepository.findById(userID).orElseThrow(() -> {
+            return new Exception("Người dùng không tồn tại");
+        });
 
-//        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        return user.getBookings().stream().map(booking -> BookingRequest.builder()
+                .showtime(convertToDto(booking.getShowtime()))
+                        .seats(booking.getBooking_seats().stream()
+                                .map(Booking_Seat::getSeat)
+                                .collect(Collectors.toList()))
+                .build())
+                .collect(Collectors.toList());
 
-        User savedUser = userRepository.save(user);
-        return savedUser.getUserID() != null;
     }
 
-    @Override
-    public User login (UserDto userDto) throws Exception {
-        User user = userRepository.findByEmail(userDto.getEmail());
-        if(user == null) {
-            throw new Exception("Người dùng không tồn tại");
-        }
-        if(!user.getPassword().equals(userDto.getPassword())) {
-            throw new Exception("Sai mật khẩu");
-        }
-        return user;
+    private Showtime convertToDto(Showtime showtime) {
+        return Showtime.builder()
+                .showtimeID(showtime.getShowtimeID())
+                .movie(showtime.getMovie())
+                .room(showtime.getRoom())
+                .startTime(showtime.getStartTime())
+                .build();
     }
 
+    private SeatDto convertToDto(Seat seat) {
+        return SeatDto.builder()
+                .seatNumber(seat.getSeatNumber())
+                .seatRow(seat.getSeatRow())
+                .build();
+    }
     @Override
-    public List<TicketDto> getBookingHistory(Long userID) {
-        List<Ticket> tickets = userRepository.findById(userID).get().getTicketList();
-
-        return tickets.stream().map(ticket -> {
-            TicketDto ticketDto = new TicketDto();
-            ticketDto.setBookingDate(ticket.getBookingDate());
-            ticketDto.setPrice(ticket.getPrice());
-            ticketDto.setUserID(ticket.getUser().getUserID());
-            ticketDto.setPaymentID(ticket.getPayment().getPaymentID());
-            ticketDto.setShowtimeID(ticket.getShowtime().getShowtimeID());
-            ticketDto.setSeatID(ticket.getSeat().getSeatID());
-            return ticketDto;
-        }).collect(Collectors.toList());
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepository.findByEmail(username);
+        if (user == null) {
+            throw new UsernameNotFoundException("User not found");
+        }
+        return User.builder()
+                .userID(user.getUserID())
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .phone(user.getPhone())
+                .address(user.getAddress())
+                .build();
     }
 }

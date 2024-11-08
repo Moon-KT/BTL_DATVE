@@ -5,56 +5,71 @@ import com.example.SB_Week9.entity.ComboOffer;
 import com.example.SB_Week9.repository.ComboOfferRepository;
 import com.example.SB_Week9.service.ComboOfferService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
-@Service
+@Component
 public class ComboOfferServiceIml implements ComboOfferService {
+    private final ComboOfferRepository comboOfferRepository;
+
     @Autowired
-    ComboOfferRepository comboOfferRepository;
+    public ComboOfferServiceIml(ComboOfferRepository comboOfferRepository) {
+        this.comboOfferRepository = comboOfferRepository;
+    }
 
-    @Override
-    public ComboOffer create(ComboOfferDto comboOfferDto) throws Exception {
-        ComboOffer comboOffer = new ComboOffer();
-
-        comboOffer.setComboDescription(comboOfferDto.getComboDescription());
-        comboOffer.setImageCombo(comboOfferDto.getImageCombo());
-        comboOffer.setPrice(comboOfferDto.getPrice());
-
-        return comboOfferRepository.save(comboOffer);
+    private ComboOfferDto convertToDto(ComboOffer comboOffer) {
+        return ComboOfferDto.builder()
+                .comboDescription(comboOffer.getComboDescription())
+                .imageCombo(comboOffer.getImageCombo())
+                .price(comboOffer.getPrice())
+                .build();
     }
 
     @Override
-    public List<ComboOffer> reads() {
-        return comboOfferRepository.findAll();
+    public ComboOfferDto create(ComboOfferDto comboOfferDto) throws Exception {
+        ComboOffer comboOffer = ComboOffer.builder()
+                .comboDescription(comboOfferDto.getComboDescription())
+                .imageCombo(comboOfferDto.getImageCombo())
+                .price(comboOfferDto.getPrice())
+                .build();
+        return convertToDto(comboOfferRepository.save(comboOffer));
     }
 
     @Override
-    public ComboOffer read(Long comboOfferID) throws Exception {
-        Optional<ComboOffer> comboOffer = Optional.ofNullable(comboOfferRepository.findById(comboOfferID))
+    public List<ComboOfferDto> reads() {
+        return comboOfferRepository.findAll().stream().map(this::convertToDto).toList();
+    }
+
+    @Override
+    public ComboOfferDto read(Long comboOfferID) throws Exception {
+        return comboOfferRepository.findById(comboOfferID)
+                .map(this::convertToDto)
                 .orElseThrow(() -> { return new Exception("Không tìm thấy combo có ID: " + comboOfferID);
                 });
-        return comboOffer.get();
     }
 
     @Override
-    public ComboOffer update(Long comboOfferID, ComboOfferDto comboOfferDto) throws Exception {
-        Optional<ComboOffer> comboOffer = Optional.ofNullable(comboOfferRepository.findById(comboOfferID))
+    public ComboOfferDto update(Long comboOfferID, ComboOfferDto comboOfferDto) throws Exception {
+        ComboOffer comboOffer = comboOfferRepository.findById(comboOfferID)
                 .orElseThrow(() -> { return new Exception("Không tìm thấy combo có ID: " + comboOfferID);
                 });
-        comboOffer.get().setComboDescription(comboOfferDto.getComboDescription());
-        comboOffer.get().setImageCombo(comboOfferDto.getImageCombo());
-        comboOffer.get().setPrice(comboOfferDto.getPrice());
-        return comboOffer.get();
+
+        comboOffer.toBuilder()
+                .comboDescription(comboOfferDto.getComboDescription())
+                .imageCombo(comboOfferDto.getImageCombo())
+                .price(comboOfferDto.getPrice())
+                .build();
+        return convertToDto(comboOfferRepository.save(comboOffer));
     }
 
     @Override
     public void delete(Long comboOfferID) throws Exception {
-        Optional<ComboOffer> comboOffer = Optional.ofNullable(comboOfferRepository.findById(comboOfferID))
-                .orElseThrow(() -> { return new Exception("Không tìm thấy combo có ID: " + comboOfferID);
-                });
-        comboOfferRepository.delete(comboOffer.get());
+        if (!comboOfferRepository.existsById(comboOfferID)) {
+            throw new Exception("Không tìm thấy combo có ID: " + comboOfferID);
+        }
+        comboOfferRepository.deleteById(comboOfferID);
     }
 }

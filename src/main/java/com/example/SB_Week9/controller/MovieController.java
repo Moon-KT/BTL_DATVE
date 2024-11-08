@@ -39,4 +39,9 @@ public class MovieController {
         return ResponseEntity.ok("Xóa phim thành công");
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<?> search(@RequestParam String keyword){
+        return ResponseEntity.ok().body(movieService.search(keyword));
+    }
+
 }

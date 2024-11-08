@@ -1,21 +1,27 @@
 package com.example.SB_Week9.entity;
 
+import com.example.SB_Week9.entity.enumModel.Gender;
+import com.example.SB_Week9.entity.enumModel.UserRole;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Check;
 import org.hibernate.annotations.Nationalized;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder(toBuilder = true)
 @Entity
 @Table(name = "users")
-public class User {
+public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
@@ -25,27 +31,76 @@ public class User {
     @Column(name = "user_name", unique = true, length = 50)
     private String username;
 
+    @Column(name = "email")
     private String email;
 
-    @Column(length = 25)
+    @Column(name = "password", length = 25)
     private String password;
 
-    @Column(length = 11)
+    @Column(name = "phone")
     private String phone;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private LocalDateTime birthday;
+    private LocalDate birthday;
 
-    @Check(constraints = "gender in ('Nam', 'Nữ', 'Khác')")
-    private String gender;
+    @Nationalized
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
 
     @Nationalized
     private String address;
 
-    @Check(constraints = "role in ('admin', 'user')")
-    private String role;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role")
+    private UserRole role;
+
+    private Double totalSpent = 0.0; // Tổng số tiền đã chi
+
+    @Column(name = "accumulated_points") // Điểm tích lũy
+    private Double accumulatedPoints;
+
+    @Column(name = "start_join")
+    private LocalDateTime creatAt; // Ngày tham gia hội viên
+
+    private Boolean enabled; // Trạng thái xác thực email
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonIgnore
-    private List<Ticket> ticketList;
+    private List<Booking> bookings;
+
+    @ManyToOne
+    @JoinColumn(name = "membership_id")
+    private Membership membership;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of();
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;    }
 }

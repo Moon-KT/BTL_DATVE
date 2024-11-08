@@ -13,53 +13,85 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class MovieServiceImpl implements MovieService {
     @Autowired
     private MovieRepository movieRepository;
-    @Autowired
-    private ScreeningRoomRepository screeningRoomRepository;
-    @Autowired
-    private ShowtimeRepository showtimeRepository;
 
+    private MovieDto convertToDto(Movie movie) {
+        return MovieDto.builder()
+                .movieName(movie.getMovieName())
+                .movieDescription(movie.getMovieDescription())
+                .movieActor(movie.getMovieActor())
+                .movieDirector(movie.getMovieDirector())
+                .movieDuration(movie.getMovieDuration())
+                .movieLanguage(movie.getMovieLanguage())
+                .moviePoster(movie.getMoviePoster())
+                .movieReleaseDate(movie.getMovieReleaseDate())
+                .build();
+    }
     @Override
-    public Movie create(MovieDto movieDto) throws Exception {
-        Movie movie = new Movie();
-
-        movie.setMovieName(movieDto.getMovieName());
-        movie.setMovieDescription(movieDto.getMovieDescription());
-        return movieRepository.save(movie);
+    public MovieDto create(MovieDto movieDto) throws Exception {
+        Movie movie = Movie.builder()
+                .movieName(movieDto.getMovieName())
+                .movieDescription(movieDto.getMovieDescription())
+                .movieActor(movieDto.getMovieActor())
+                .movieDirector(movieDto.getMovieDirector())
+                .movieDuration(movieDto.getMovieDuration())
+                .movieLanguage(movieDto.getMovieLanguage())
+                .moviePoster(movieDto.getMoviePoster())
+                .movieReleaseDate(movieDto.getMovieReleaseDate())
+                .build();
+        return convertToDto(movieRepository.save(movie));
     }
 
     @Override
-    public List<Movie> reads() {
-        return movieRepository.findAll();
+    public List<MovieDto> reads() {
+        return movieRepository.findAll().stream().map(this::convertToDto).toList();
     }
 
     @Override
-    public Movie read(Long movieID) throws Exception {
-        Optional<Movie> movie = Optional.ofNullable(movieRepository.findById(movieID))
-                .orElseThrow(() -> { return new Exception("Không tìm thấy phim có ID: " + movieID);
-                });
-        return movie.get();
+    public MovieDto read(Long movieID) throws Exception {
+        return movieRepository.findById(movieID)
+                .map(this::convertToDto)
+                .orElseThrow(() -> new Exception("Không tìm thấy phim có ID: " + movieID));
     }
 
     @Override
-    public Movie update(Long movieID, MovieDto movieDto) throws Exception {
-        Optional<Movie> movie = Optional.ofNullable(movieRepository.findById(movieID))
-                .orElseThrow(() -> { return new Exception("Không tìm thấy phim có ID: " + movieID);
-                });
-        movie.get().setMovieName(movieDto.getMovieName());
-        movie.get().setMovieDescription(movieDto.getMovieDescription());
-        return movie.get();
+    public MovieDto update(Long movieID, MovieDto movieDto) throws Exception {
+        Movie existingMovie = movieRepository.findById(movieID)
+                .orElseThrow(() -> new Exception("Không tìm thấy phim có ID: " + movieID));
+        Movie updatedMovie = existingMovie.toBuilder()
+                .movieName(movieDto.getMovieName())
+                .movieDescription(movieDto.getMovieDescription())
+                .movieActor(movieDto.getMovieActor())
+                .movieDirector(movieDto.getMovieDirector())
+                .movieDuration(movieDto.getMovieDuration())
+                .movieLanguage(movieDto.getMovieLanguage())
+                .moviePoster(movieDto.getMoviePoster())
+                .movieReleaseDate(movieDto.getMovieReleaseDate())
+                .build();
+        return convertToDto(movieRepository.save(updatedMovie));
     }
 
     @Override
     public void delete(Long movieID) throws Exception {
-        Optional<Movie> movie = Optional.ofNullable(movieRepository.findById(movieID))
-                .orElseThrow(() -> { return new Exception("Không tìm thấy phim có ID: " + movieID);
-                });
-        movieRepository.delete(movie.get());
+        if(!movieRepository.existsById(movieID)) {
+            throw new Exception("Không tìm thấy phim có ID: " + movieID);
+        }
+        movieRepository.deleteById(movieID);
+    }
+
+    @Override
+    public List<MovieDto> search(String keyword) {
+        List<Movie> movies = movieRepository.searchByKeyword(keyword);
+        return movies.stream().map(movie -> {
+            MovieDto movieDto = new MovieDto();
+            movieDto.setMovieName(movie.getMovieName());
+            movieDto.setMovieDescription(movie.getMovieDescription());
+            return movieDto;
+        }).collect(Collectors.toList());
     }
 }

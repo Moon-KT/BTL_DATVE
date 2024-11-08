@@ -1,19 +1,15 @@
 package com.example.SB_Week9.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.Nationalized;
 
 import java.util.List;
 import java.util.Set;
-
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder(toBuilder = true)
 @Entity
 @Table(name = "combo_offers")
 public class ComboOffer {
@@ -30,6 +26,4 @@ public class ComboOffer {
     private String imageCombo;
     private Double price;
 
-    @OneToMany(mappedBy = "comboOffer", cascade = CascadeType.ALL)
-    private List<Ticket_ComboOffer> ticket_comboOfferList;
 }

@@ -1,5 +1,6 @@
 package com.example.SB_Week9.dto;
 
+import com.example.SB_Week9.entity.enumModel.PromotionType;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -8,14 +9,11 @@ import lombok.*;
 import org.hibernate.annotations.Nationalized;
 
 import java.time.LocalDateTime;
-
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
+@Builder
 public class PromotionDto {
-    @Nationalized
-    @Column(length = 1000)
     private String promotionDescription;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
@@ -23,5 +21,10 @@ public class PromotionDto {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime promotionEndDate;
 
-    private Double discount;
+    private PromotionType promotionType;
+
+    private Double price;
+
+
+
 }

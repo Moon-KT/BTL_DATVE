@@ -11,6 +11,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "screening_rooms")
 public class ScreeningRoom {
@@ -21,6 +22,7 @@ public class ScreeningRoom {
     private Long roomID;
 
     @Nationalized
+    @Column(name = "room_name")
     private String roomName;
 
     @OneToMany(mappedBy = "room", cascade = CascadeType.ALL)

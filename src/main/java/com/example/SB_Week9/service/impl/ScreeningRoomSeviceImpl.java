@@ -17,38 +17,53 @@ public class ScreeningRoomSeviceImpl implements ScreeningRoomService {
     @Autowired
     private ScreeningRoomRepository screeningRoomRepository;
 
+    @Autowired
+    private CinemaRepository cinemaRepository;
+
+    private ScreeningRoomDto convertToDto(ScreeningRoom screeningRoom) {
+        return ScreeningRoomDto.builder()
+                .roomName(screeningRoom.getRoomName())
+                .cinemaID(screeningRoom.getCinema().getCinemaID())
+                .build();
+    }
     @Override
-    public ScreeningRoom create(ScreeningRoomDto screeningRoomDto) throws Exception {
-        ScreeningRoom screeningRoom = new ScreeningRoom();
+    public ScreeningRoomDto create(ScreeningRoomDto screeningRoomDto) throws Exception {
+        return convertToDto(screeningRoomRepository.save(ScreeningRoom.builder()
+                .roomName(screeningRoomDto.getRoomName())
+                .cinema(cinemaRepository.findById(screeningRoomDto.getCinemaID()).orElseThrow(() -> {
+                    return new Exception("Không tìm thấy rạp chiếu phim có ID: " + screeningRoomDto.getCinemaID());
+                }))
+                .build()));
+    }
+
+    @Override
+    public List<ScreeningRoomDto> reads() {
+        return screeningRoomRepository.findAll().stream().map(this::convertToDto).toList();
+    }
+
+    @Override
+    public ScreeningRoomDto read(Long screeningRoomID) throws Exception {
+        return screeningRoomRepository.findById(screeningRoomID)
+                .map(this::convertToDto)
+                .orElseThrow(() -> { return new Exception("Không tìm thấy phòng chiếu có ID: " + screeningRoomID);});
+    }
+
+    @Override
+    public ScreeningRoomDto update(Long screeningRoomID, ScreeningRoomDto screeningRoomDto) throws Exception {
+        ScreeningRoom screeningRoom = screeningRoomRepository.findById(screeningRoomID)
+                .orElseThrow(() -> { return new Exception("Không tìm thấy phòng chiếu có ID: " + screeningRoomID);});
         screeningRoom.setRoomName(screeningRoomDto.getRoomName());
-        return screeningRoomRepository.save(screeningRoom);
-    }
-
-    @Override
-    public List<ScreeningRoom> reads() {
-        return screeningRoomRepository.findAll();
-    }
-
-    @Override
-    public ScreeningRoom read(Long screeningRoomID) throws Exception {
-        Optional<ScreeningRoom> screeningRoom = Optional.ofNullable(screeningRoomRepository.findById(screeningRoomID))
-                .orElseThrow(() -> { return new Exception("Không tìm thấy phòng chiếu có ID: " + screeningRoomID);});
-        return screeningRoom.get();
-    }
-
-    @Override
-    public ScreeningRoom update(Long screeningRoomID, ScreeningRoomDto screeningRoomDto) throws Exception {
-        Optional<ScreeningRoom> screeningRoom = Optional.ofNullable( screeningRoomRepository.findById(screeningRoomID))
-                .orElseThrow(() -> { return new Exception("Không tìm thấy phòng chiếu có ID: " + screeningRoomID);});
-
-        screeningRoom.get().setRoomName(screeningRoomDto.getRoomName());
-        return screeningRoomRepository.save(screeningRoom.get());
+        screeningRoom.setCinema(cinemaRepository.findById(screeningRoomDto.getCinemaID()).orElseThrow(() -> {
+            return new Exception("Không tìm thấy rạp chiếu phim có ID: " + screeningRoomDto.getCinemaID());
+        }));
+        return convertToDto(screeningRoomRepository.save(screeningRoom));
     }
 
     @Override
     public void delete(Long screeningRoomID) throws Exception {
-        Optional<ScreeningRoom> screeningRoom = Optional.ofNullable(screeningRoomRepository.findById(screeningRoomID))
-                .orElseThrow(() -> { return new Exception("Không tìm thấy phòng chiếu có ID: " + screeningRoomID);});
-        screeningRoomRepository.delete(screeningRoom.get());
+        if(!screeningRoomRepository.existsById(screeningRoomID)) {
+            throw new Exception("Không tìm thấy phòng chiếu có ID: " + screeningRoomID);
+        }
+        screeningRoomRepository.deleteById(screeningRoomID);
     }
 }

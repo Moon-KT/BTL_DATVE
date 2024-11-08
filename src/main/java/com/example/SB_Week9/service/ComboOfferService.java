@@ -8,9 +8,12 @@ import java.util.List;
 
 @Service
 public interface ComboOfferService {
-    ComboOffer create(ComboOfferDto comboOfferDto) throws Exception;
-    List<ComboOffer> reads();
-    ComboOffer read(Long comboOfferID) throws Exception;
-    ComboOffer update(Long comboOfferID, ComboOfferDto comboOfferDto) throws Exception;
+    //CRUD
+    ComboOfferDto create(ComboOfferDto comboOfferDto) throws Exception;
+    List<ComboOfferDto> reads();
+    ComboOfferDto read(Long comboOfferID) throws Exception;
+    ComboOfferDto update(Long comboOfferID, ComboOfferDto comboOfferDto) throws Exception;
     void delete(Long comboOfferID) throws Exception;
+
+    //Other
 }

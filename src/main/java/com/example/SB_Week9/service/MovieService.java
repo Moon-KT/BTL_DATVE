@@ -8,9 +8,13 @@ import java.util.List;
 
 @Service
 public interface MovieService {
-    Movie create(MovieDto movieDto) throws Exception;
-    List<Movie> reads();
-    Movie read(Long movieID) throws Exception;
-    Movie update(Long movieID, MovieDto movieDto) throws Exception;
+    //CRUD
+    MovieDto create(MovieDto movieDto) throws Exception;
+    List<MovieDto> reads();
+    MovieDto read(Long movieID) throws Exception;
+    MovieDto update(Long movieID, MovieDto movieDto) throws Exception;
     void delete(Long movieID) throws Exception;
+
+    //Other
+    List<MovieDto> search(String keyword);
 }

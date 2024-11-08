@@ -4,7 +4,7 @@ import com.example.SB_Week9.entity.key.MovieGenreKey;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "movie_genre")
+@Table(name = "movie_genre", uniqueConstraints = {@UniqueConstraint(columnNames = {"movie_id", "genre_id"})})
 public class Movie_Genre {
     @EmbeddedId
     private MovieGenreKey id;

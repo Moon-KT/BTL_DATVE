@@ -10,9 +10,10 @@ import java.util.Optional;
 
 @Service
 public interface SeatService {
-   Seat create(SeatDto seatDto) throws Exception;
-   List<Seat> reads();
-   Seat read(Long seatId) throws Exception;
-   Seat update(Long seatId, SeatDto seatDto) throws Exception;
+   //CRUD
+   SeatDto create(SeatDto seatDto) throws Exception;
+   List<SeatDto> reads();
+   SeatDto read(Long seatId) throws Exception;
+   SeatDto update(Long seatId, SeatDto seatDto) throws Exception;
    void delete(Long seatId) throws Exception;
 }

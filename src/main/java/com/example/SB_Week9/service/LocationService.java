@@ -10,10 +10,13 @@ import java.util.List;
 
 @Service
 public interface LocationService {
-    Location create(LocationDto locationDto) throws Exception;
-    List<Location> reads();
-    Location read(Long locationID) throws Exception;
-    Location update(Long locationID, LocationDto locationDto) throws Exception;
+    //CRUD
+    LocationDto create(LocationDto locationDto) throws Exception;
+    List<LocationDto> reads();
+    LocationDto read(Long locationID) throws Exception;
+    LocationDto update(Long locationID, LocationDto locationDto) throws Exception;
     void delete(Long locationID) throws Exception;
-    List<Cinema> getCinemaByLocation(Long locationID);
+
+    //Other
+    List<CinemaDto> getCinemaByLocation(Long locationID);
 }

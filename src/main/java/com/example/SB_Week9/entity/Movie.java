@@ -8,10 +8,10 @@ import org.hibernate.annotations.Nationalized;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder(toBuilder = true)
 @Entity
 @Table(name = "movies")
 public class Movie {
@@ -49,6 +49,4 @@ public class Movie {
 
     @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL)
     private List<Movie_Genre> movie_genreList;
-
-
 }

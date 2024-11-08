@@ -23,61 +23,52 @@ public class SeatServiceImpl implements SeatService {
     @Autowired
     private SeatTypeRepository seatTypeRepository;
 
-    @Autowired
-    private ScreeningRoomRepository screeningRoomRepository;
-
+    private SeatDto convertToDto(Seat seat) {
+        return SeatDto.builder()
+                .seatNumber(seat.getSeatNumber())
+                .seatRow(seat.getSeatRow())
+                .status(seat.getStatus())
+                .seatTypeID(seat.getSeatType().getSeatTypeID())
+                .build();
+    }
     @Override
-    public Seat create(SeatDto seatDto) throws Exception {
-        Optional<SeatType> seatType = Optional.ofNullable(seatTypeRepository.findById(seatDto.getSeatTypeID())
-                .orElseThrow(() -> { return new Exception("Không tìm thấy loại ghế có ID: " + seatDto.getSeatTypeID());}));
-
-        Seat seat = new Seat();
-        seat.setSeatNumber(seatDto.getSeatNumber());
-        seat.setSeatRow(seatDto.getSeatRow());
-        seat.setStatus(seatDto.getStatus());
-        seat.setSeatType(seatType.get());
-        seat.setScreeningRoom(screeningRoomRepository.findById(seatDto.getSeatTypeID()).get());
-        return seatRepository.save(seat);
+    public SeatDto create(SeatDto seatDto) throws Exception {
+        Seat seat = Seat.builder()
+                .seatNumber(seatDto.getSeatNumber())
+                .seatRow(seatDto.getSeatRow())
+                .status(seatDto.getStatus())
+                .seatType(seatTypeRepository.findById(seatDto.getSeatTypeID()).get())
+                .build();
+        return convertToDto(seatRepository.save(seat));
     }
 
     @Override
-    public List<Seat> reads() {
-        return seatRepository.findAll();
+    public List<SeatDto> reads() {
+        return seatRepository.findAll().stream().map(this::convertToDto).toList();
     }
 
     @Override
-    public Seat read(Long seatId) throws Exception {
-        Optional<Seat> seat = seatRepository.findById(seatId);
-        if (seat.isEmpty()) {
-            throw new Exception("Không tìm thấy ghế có ID: " + seatId);
-        }
-        return seat.get();
+    public SeatDto read(Long seatId) throws Exception {
+        return seatRepository.findById(seatId)
+                .map(this::convertToDto)
+                .orElseThrow(() -> new Exception("Không tìm thấy ghế có ID: " + seatId));
     }
 
     @Override
-    public Seat update(Long seatId, SeatDto seatDto) throws Exception {
-        Optional<Seat> seat = seatRepository.findById(seatId);
-        if (seat.isEmpty()) {
-            throw new Exception("Không tìm thấy ghế có ID: " + seatId);
-        }
+    public SeatDto update(Long seatId, SeatDto seatDto) throws Exception {
+        Seat seat = seatRepository.findById(seatId).orElseThrow(() -> new Exception("Không tìm thấy ghế có ID: " + seatId));
 
-        Optional<SeatType> seatType = Optional.ofNullable(seatTypeRepository.findById(seatDto.getSeatTypeID())
-                .orElseThrow(() -> { return new Exception("Không tìm thấy loại ghế có ID: " + seatDto.getSeatTypeID());}));
-
-        seat.get().setSeatNumber(seatDto.getSeatNumber());
-        seat.get().setSeatRow(seatDto.getSeatRow());
-        seat.get().setStatus(seatDto.getStatus());
-        seat.get().setSeatType(seatType.get());
-        seat.get().setScreeningRoom(screeningRoomRepository.findById(seatDto.getSeatTypeID()).get());
-        return seatRepository.save(seat.get());
+        return convertToDto(seatRepository.save(seat.toBuilder()
+                        .seatNumber(seatDto.getSeatNumber())
+                        .seatRow(seatDto.getSeatRow())
+                        .status(seatDto.getStatus())
+                        .seatType(seatTypeRepository.findById(seatDto.getSeatTypeID()).get())
+                .build()));
     }
 
     @Override
     public void delete(Long seatId) throws Exception {
-        Optional<Seat> seat = seatRepository.findById(seatId);
-        if (seat.isEmpty()) {
-            throw new Exception("Không tìm thấy ghế có ID: " + seatId);
-        }
-        seatRepository.delete(seat.get());
+        Seat seat = seatRepository.findById(seatId).orElseThrow(() -> new Exception("Không tìm thấy ghế có ID: " + seatId));
+        seatRepository.delete(seat);
     }
 }

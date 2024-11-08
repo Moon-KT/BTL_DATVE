@@ -5,50 +5,62 @@ import com.example.SB_Week9.entity.Genre;
 import com.example.SB_Week9.repository.GenreRepository;
 import com.example.SB_Week9.service.GenreService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
+import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Optional;
 
-@Service
+@Component
 public class GenreServiceDto implements GenreService {
+    private final GenreRepository genreRepository;
+
     @Autowired
-    GenreRepository genreRepository;
+    public GenreServiceDto(GenreRepository genreRepository) {
+        this.genreRepository = genreRepository;
+    }
+
+    private GenreDto convertToDto(Genre genre) {
+        return GenreDto.builder()
+                .genreName(genre.getGenreName())
+                .build();
+    }
 
     @Override
-    public Genre create(GenreDto genreDto) throws Exception {
-        Genre genre = new Genre();
+    public GenreDto create(GenreDto genreDto) throws Exception {
+        Genre genre = Genre.builder()
+                .genreName(genreDto.getGenreName())
+                .build();
+        genreRepository.save(genre);
+        return convertToDto(genre);
+    }
+
+    @Override
+    public List<GenreDto> reads() {
+        return genreRepository.findAll().stream().map(this::convertToDto).toList();
+    }
+
+    @Override
+    public GenreDto read(Long genreID) throws Exception {
+        return genreRepository.findById(genreID)
+                .map(this::convertToDto)
+                .orElseThrow(() -> { return new Exception("Không tìm thấy thể loại có ID: " + genreID);
+                });
+    }
+
+    @Override
+    public GenreDto update(Long genreID, GenreDto genreDto) throws Exception {
+        Genre genre = genreRepository.findById(genreID)
+                .orElseThrow(() -> { return new Exception("Không tìm thấy thể loại có ID: " + genreID);
+                });
         genre.setGenreName(genreDto.getGenreName());
-        return genreRepository.save(genre);
-    }
-
-    @Override
-    public List<Genre> reads() {
-        return genreRepository.findAll();
-    }
-
-    @Override
-    public Genre read(Long genreID) throws Exception {
-        Optional<Genre> genre = Optional.ofNullable(genreRepository.findById(genreID))
-                .orElseThrow(() -> { return new Exception("Không tìm thấy thể loại có ID: " + genreID);
-                });
-        return genre.get();
-    }
-
-    @Override
-    public Genre update(Long genreID, GenreDto genreDto) throws Exception {
-        Optional<Genre> genre = Optional.ofNullable(genreRepository.findById(genreID))
-                .orElseThrow(() -> { return new Exception("Không tìm thấy thể loại có ID: " + genreID);
-                });
-        genre.get().setGenreName(genreDto.getGenreName());
-        return genre.get();
+        genreRepository.save(genre);
+        return convertToDto(genre);
     }
 
     @Override
     public void delete(Long genreID) throws Exception {
-        Optional<Genre> genre = Optional.ofNullable(genreRepository.findById(genreID))
-                .orElseThrow(() -> { return new Exception("Không tìm thấy thể loại có ID: " + genreID);
-                });
-        genreRepository.delete(genre.get());
+        if (!genreRepository.existsById(genreID)) {
+            throw new Exception("Không tìm thấy thể loại có ID: " + genreID);
+        }
+        genreRepository.deleteById(genreID);
     }
 }

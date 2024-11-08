@@ -15,45 +15,57 @@ public class PromotionServiceImpl implements PromotionService {
     @Autowired
     private PromotionRepository promotionRepository;
 
-    @Override
-    public Promotion create(PromotionDto promotionDto) throws Exception {
-        Promotion promotion = new Promotion();
-
-        promotion.setPromotionDescription(promotionDto.getPromotionDescription());
-        promotion.setPromotionStartDate(promotionDto.getPromotionStartDate());
-        promotion.setPromotionEndDate(promotionDto.getPromotionEndDate());
-        promotion.setDiscount(promotionDto.getDiscount());
-        return promotionRepository.save(promotion);
+    private PromotionDto convertToDto(Promotion promotion) {
+        return PromotionDto.builder()
+                .promotionDescription(promotion.getPromotionDescription())
+                .promotionStartDate(promotion.getPromotionStartDate())
+                .promotionEndDate(promotion.getPromotionEndDate())
+                .promotionType(promotion.getPromotionType())
+                .build();
     }
 
     @Override
-    public List<Promotion> reads() {
-        return promotionRepository.findAll();
+    public PromotionDto create(PromotionDto promotionDto) throws Exception {
+        Promotion promotion = Promotion.builder()
+                .promotionDescription(promotionDto.getPromotionDescription())
+                .promotionStartDate(promotionDto.getPromotionStartDate())
+                .promotionEndDate(promotionDto.getPromotionEndDate())
+                .promotionType(promotionDto.getPromotionType())
+                .price(promotionDto.getPrice())
+                .build();
+        return convertToDto(promotionRepository.save(promotion));
     }
 
     @Override
-    public Promotion read(Long promotionID) throws Exception {
-        Optional<Promotion> promotion = Optional.ofNullable(promotionRepository.findById(promotionID))
-                .orElseThrow(() -> { return new Exception("Promotion not found");});
-        return promotion.get();
+    public List<PromotionDto> reads() {
+        return promotionRepository.findAll().stream().map(this::convertToDto).toList();
     }
 
     @Override
-    public Promotion update(Long promotionID, PromotionDto promotionDto) throws Exception {
-        Optional<Promotion> promotion = Optional.ofNullable(promotionRepository.findById(promotionID))
-                .orElseThrow(() -> { return new Exception("Promotion not found");});
+    public PromotionDto read(Long promotionID) throws Exception {
+        return promotionRepository.findById(promotionID)
+                .map(this::convertToDto)
+                .orElseThrow(() -> new Exception("Promotion not found"));
+    }
 
-        promotion.get().setPromotionDescription(promotionDto.getPromotionDescription());
-        promotion.get().setPromotionStartDate(promotionDto.getPromotionStartDate());
-        promotion.get().setPromotionEndDate(promotionDto.getPromotionEndDate());
-        promotion.get().setDiscount(promotionDto.getDiscount());
-        return promotionRepository.save(promotion.get());
+    @Override
+    public PromotionDto update(Long promotionID, PromotionDto promotionDto) throws Exception {
+        Promotion existingPromotion = promotionRepository.findById(promotionID)
+                .orElseThrow(() -> new Exception("Promotion not found"));
+        return convertToDto(promotionRepository.save(existingPromotion.toBuilder()
+                .promotionDescription(promotionDto.getPromotionDescription())
+                .promotionStartDate(promotionDto.getPromotionStartDate())
+                .promotionEndDate(promotionDto.getPromotionEndDate())
+                .promotionType(promotionDto.getPromotionType())
+                        .price(promotionDto.getPrice())
+                .build()));
     }
 
     @Override
     public void delete(Long promotionID) throws Exception {
-        Optional<Promotion> promotion = Optional.ofNullable(promotionRepository.findById(promotionID))
-                .orElseThrow(() -> { return new Exception("Promotion not found");});
-        promotionRepository.delete(promotion.get());
+        if(!promotionRepository.existsById(promotionID)) {
+            throw new Exception("Promotion not found");
+        }
+        promotionRepository.deleteById(promotionID);
     }
 }

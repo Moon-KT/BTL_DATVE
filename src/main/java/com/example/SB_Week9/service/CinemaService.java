@@ -13,11 +13,14 @@ import java.util.List;
 
 @Service
 public interface CinemaService {
-    Cinema create(CinemaDto cinemaDto) throws Exception;
-    List<Cinema> reads();
-    Cinema read(Long cinemaID) throws Exception;
-    Cinema update(Long cinemaID, CinemaDto cinemaDto) throws Exception;
-    void delete(Long userID) throws Exception;
+    //CRUD
+    CinemaDto create(CinemaDto cinemaDto) throws Exception;
+    List<CinemaDto> reads();
+    CinemaDto read(Long cinemaID) throws Exception;
+    CinemaDto update(Long cinemaID, CinemaDto cinemaDto) throws Exception;
+    void delete(Long cinemaID) throws Exception;
+
+    //Other
     List<ScreeningRoomDto> getRoomByCinema(Long cinemaID);
     List<MovieDto> getMovieByCinema(Long cinemaID);
 }

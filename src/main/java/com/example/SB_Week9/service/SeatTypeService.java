@@ -8,9 +8,10 @@ import java.util.List;
 
 @Service
 public interface SeatTypeService {
-    SeatType create(SeatTypeDto seatTypeDto) throws Exception;
-    List<SeatType> reads();
-    SeatType read(Long seatTypeId) throws Exception;
-    SeatType update(Long seatTypeId, SeatTypeDto seatTypeDto) throws Exception;
+    //CRUD
+    SeatTypeDto create(SeatTypeDto seatTypeDto) throws Exception;
+    List<SeatTypeDto> reads();
+    SeatTypeDto read(Long seatTypeId) throws Exception;
+    SeatTypeDto update(Long seatTypeId, SeatTypeDto seatTypeDto) throws Exception;
     void delete(Long seatTypeId) throws Exception;
 }

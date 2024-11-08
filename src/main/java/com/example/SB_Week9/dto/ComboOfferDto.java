@@ -5,14 +5,11 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Lob;
 import lombok.*;
 import org.hibernate.annotations.Nationalized;
-
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
+@Builder
 public class ComboOfferDto {
-    @Nationalized
-    @Column(length = 1000)
     private String comboDescription;
     private String imageCombo;
     private double price;

@@ -1,5 +1,6 @@
 package com.example.SB_Week9.service;
 
+import com.example.SB_Week9.dto.BookingRequest;
 import com.example.SB_Week9.dto.TicketDto;
 import com.example.SB_Week9.dto.UserDto;
 import com.example.SB_Week9.entity.User;
@@ -12,12 +13,13 @@ import java.util.Optional;
 
 @Service
 public interface UserService {
-    User create(UserDto userDto) throws Exception;
-    List<User> reads();
-    User read(Long userID) throws Exception;
-    User update(Long userID, UserDto userDto) throws Exception;
+    //CRUD
+    UserDto create(UserDto userDto) throws Exception;
+    List<UserDto> reads();
+    UserDto read(Long userID) throws Exception;
+    UserDto update(Long userID, UserDto userDto) throws Exception;
     void delete(Long userID) throws Exception;
-    boolean register(UserDto userDto) throws Exception;
-    User login(UserDto userDto) throws Exception;
-    List<TicketDto> getBookingHistory(Long userID);
+
+    //Other
+    List<BookingRequest> getBookingHistory(Long userID) throws Exception;
 }

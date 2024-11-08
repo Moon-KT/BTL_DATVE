@@ -7,10 +7,10 @@ import org.hibernate.annotations.Nationalized;
 
 import java.util.List;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder(toBuilder = true)
 @Entity
 @Table(name = "cinemas")
 public class Cinema {
@@ -23,7 +23,7 @@ public class Cinema {
     @Nationalized
     private String cinemaName;
 
-    @Column(length = 11)
+    @Column(length = 25)
     private String hotline;
 
     @Nationalized

@@ -1,17 +1,16 @@
 package com.example.SB_Week9.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
-@Getter
-@Setter
+
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder(toBuilder = true)
 @Entity
 @Table(name = "tickets")
 public class Ticket {
@@ -21,31 +20,18 @@ public class Ticket {
     @Column(name = "ticket_id")
     private Long ticketID;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime bookingDate;
+    @Column(name = "price")
+    private Double price;
 
-    private double price;
-    @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL)
-    @JsonIgnore
-    private List<Ticket_ComboOffer> ticket_comboOfferList;
-
-    @OneToMany(mappedBy = "ticket", cascade = CascadeType.ALL)
-    @JsonIgnore
-    private List<Ticket_Promotion> ticket_promotionList;
-
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @Column(name = "ticket_code")
+    private String ticketCode;
 
     @ManyToOne
     @JoinColumn(name = "seat_id")
     private Seat seat;
 
     @ManyToOne
-    @JoinColumn(name = "showtime_id")
-    private Showtime showtime;
+    @JoinColumn(name = "booking_id")
+    private Booking booking;
 
-    @ManyToOne
-    @JoinColumn(name = "payment_id")
-    private Payment payment;
 }

@@ -8,9 +8,9 @@ import java.util.List;
 
 @Service
 public interface ScreeningRoomService {
-    ScreeningRoom create(ScreeningRoomDto screeningRoomDto) throws Exception;
-    List<ScreeningRoom> reads();
-    ScreeningRoom read(Long screeningRoomID) throws Exception;
-    ScreeningRoom update(Long screeningRoomID, ScreeningRoomDto screeningRoomDto) throws Exception;
+    ScreeningRoomDto create(ScreeningRoomDto screeningRoomDto) throws Exception;
+    List<ScreeningRoomDto> reads();
+    ScreeningRoomDto read(Long screeningRoomID) throws Exception;
+    ScreeningRoomDto update(Long screeningRoomID, ScreeningRoomDto screeningRoomDto) throws Exception;
     void delete(Long screeningRoomID) throws Exception;
 }

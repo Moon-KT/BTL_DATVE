@@ -1,17 +1,16 @@
 package com.example.SB_Week9.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.Nationalized;
 
-@Getter
-@Setter
+import java.util.List;
+
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class SeatTypeDto {
-    @Nationalized
     private String seatTypeName;
     private Double seatPrice;
+    private List<SeatDto> seatList;
 }

@@ -8,10 +8,10 @@ import org.hibernate.annotations.Nationalized;
 
 import java.util.List;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder(toBuilder = true)
 @Entity
 @Table(name = "locations")
 public class Location {

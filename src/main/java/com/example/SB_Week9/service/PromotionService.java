@@ -8,9 +8,14 @@ import java.util.List;
 
 @Service
 public interface PromotionService {
-    Promotion create(PromotionDto promotionDto) throws Exception;
-    List<Promotion> reads();
-    Promotion read(Long promotionID) throws Exception;
-    Promotion update(Long promotionID, PromotionDto promotionDto) throws Exception;
+    //CRUD
+    PromotionDto create(PromotionDto promotionDto) throws Exception;
+    List<PromotionDto> reads();
+    PromotionDto read(Long promotionID) throws Exception;
+    PromotionDto update(Long promotionID, PromotionDto promotionDto) throws Exception;
     void delete(Long promotionID) throws Exception;
+
+    //Other
+
+
 }

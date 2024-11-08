@@ -8,10 +8,11 @@ import java.util.List;
 
 @Service
 public interface ShowtimeService {
-    Showtime create(ShowtimeDto showtimeDto) throws Exception;
-    Showtime read(Long showtimeID) throws Exception;
-    List<Showtime> reads();
-    Showtime update(Long showtimeID, ShowtimeDto showtimeDto) throws Exception;
+    //CRUD
+    ShowtimeDto create(ShowtimeDto showtimeDto) throws Exception;
+    ShowtimeDto read(Long showtimeID) throws Exception;
+    List<ShowtimeDto> reads();
+    ShowtimeDto update(Long showtimeID, ShowtimeDto showtimeDto) throws Exception;
     void delete(Long showtimeID) throws Exception;
 
 }

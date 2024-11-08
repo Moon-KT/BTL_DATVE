@@ -9,69 +9,84 @@ import com.example.SB_Week9.repository.CinemaRepository;
 import com.example.SB_Week9.repository.LocationRepository;
 import com.example.SB_Week9.service.CinemaService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-@Service
+@Component
 public class CinemaServiceImpl implements CinemaService {
-    @Autowired
-    private CinemaRepository cinemaRepository;
+    private final CinemaRepository cinemaRepository;
+    private final LocationRepository locationRepository;
 
     @Autowired
-    private LocationRepository locationRepository;
+    public CinemaServiceImpl(CinemaRepository cinemaRepository, LocationRepository locationRepository) {
+        this.cinemaRepository = cinemaRepository;
+        this.locationRepository = locationRepository;
+    }
 
-    @Override
-    public Cinema create(CinemaDto cinemaDto) throws Exception {
-        Optional<Location> location = Optional.ofNullable(locationRepository.findById(cinemaDto.getLocationID())
-                .orElseThrow(() -> {
-                    return new Exception("Không tìm thấy địa điểm có ID: " + cinemaDto.getLocationID());
-                }));
-        Cinema cinema = new Cinema();
-        cinema.setCinemaName(cinemaDto.getCinemaName());
-
-        cinema.setLocation(location.get());
-
-        return cinemaRepository.save(cinema);
+    private CinemaDto convertToDto(Cinema cinema) {
+        return CinemaDto.builder()
+                .cinemaName(cinema.getCinemaName())
+                .detailedAddress(cinema.getDetailedAddress())
+                .hotline(cinema.getHotline())
+                .locationID(cinema.getLocation().getLocationID())
+                .build();
     }
 
     @Override
-    public List<Cinema> reads() {
-        return cinemaRepository.findAll();
+    public CinemaDto create(CinemaDto cinemaDto) throws Exception {
+        Cinema cinema = Cinema.builder()
+                .cinemaName(cinemaDto.getCinemaName())
+                .detailedAddress(cinemaDto.getDetailedAddress())
+                .hotline(cinemaDto.getHotline())
+                .location(locationRepository.findById(cinemaDto.getLocationID())
+                        .orElseThrow(() -> {
+                            return new Exception("Không tìm thấy địa điểm có ID: " + cinemaDto.getLocationID());
+                        }))
+                .build();
+        return convertToDto(cinemaRepository.save(cinema));
     }
 
     @Override
-    public Cinema read(Long cinemaID) throws Exception {
-        Optional<Cinema> cinema = Optional.ofNullable(cinemaRepository.findById(cinemaID))
+    public List<CinemaDto> reads() {
+        return cinemaRepository.findAll().stream().map(this::convertToDto).toList();
+    }
+
+    @Override
+    public CinemaDto read(Long cinemaID) throws Exception {
+        return cinemaRepository.findById(cinemaID)
+                .map(this::convertToDto)
                 .orElseThrow(() -> {
                     return new Exception("Không tìm thấy rạp có ID: " + cinemaID);
                 });
-        return cinema.get();
     }
 
     @Override
-    public Cinema update(Long cinemaID, CinemaDto cinemaDto) throws Exception {
-        Optional<Cinema> cinema = Optional.ofNullable(cinemaRepository.findById(cinemaID))
+    public CinemaDto update(Long cinemaID, CinemaDto cinemaDto) throws Exception {
+        Cinema cinema = cinemaRepository.findById(cinemaID)
                 .orElseThrow(() -> {
                     return new Exception("Không tìm thấy rạp có ID: " + cinemaID);
                 });
-        Optional<Location> location = Optional.ofNullable(locationRepository.findById(cinemaDto.getLocationID())
-                .orElseThrow(() -> {
-                    return new Exception("Không tìm thấy địa điểm có ID: " + cinemaDto.getLocationID());
-                }));
-        cinema.get().setCinemaName(cinemaDto.getCinemaName());
-        cinema.get().setLocation(location.get());
-        return cinema.get();
+        cinema.toBuilder()
+                .cinemaName(cinemaDto.getCinemaName())
+                .detailedAddress(cinemaDto.getDetailedAddress())
+                .hotline(cinemaDto.getHotline())
+                .location(locationRepository.findById(cinemaDto.getLocationID())
+                        .orElseThrow(() -> {
+                            return new Exception("Không tìm thấy địa điểm có ID: " + cinemaDto.getLocationID());
+                        }))
+                .build();
+        return convertToDto(cinemaRepository.save(cinema));
     }
 
     @Override
-    public void delete(Long userID) throws Exception {
-        Optional<Cinema> cinema = Optional.ofNullable(cinemaRepository.findById(userID))
-                .orElseThrow(() -> {
-                    return new Exception("Không tìm thấy rạp có ID: " + userID);
-                });
-        cinemaRepository.delete(cinema.get());
+    public void delete(Long cinemaID) throws Exception {
+        if (!cinemaRepository.existsById(cinemaID)) {
+            throw new Exception("Không tìm thấy rạp có ID: " + cinemaID);
+        }
+        cinemaRepository.deleteById(cinemaID);
     }
 
     @Override

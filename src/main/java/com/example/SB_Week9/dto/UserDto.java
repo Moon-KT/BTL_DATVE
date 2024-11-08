@@ -1,35 +1,26 @@
 package com.example.SB_Week9.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.persistence.Entity;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.hibernate.annotations.Check;
-import org.hibernate.annotations.Nationalized;
+import com.example.SB_Week9.entity.enumModel.Gender;
+import com.example.SB_Week9.entity.enumModel.UserRole;
+import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@Data
+@Builder(toBuilder = true)
 public class UserDto {
-    @Nationalized
     private String username;
-
     private String email;
     private String password;
     private String phone;
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-    private LocalDateTime birthday;
-
-    private String gender;
-
-    @Nationalized
+    private LocalDate birthday;
+    private Gender gender;
     private String address;
-
-    private String role;
+    private UserRole role;
+    private Double totalSpent;
+    private LocalDateTime createdAt;
+    private Boolean enabled;
+    private List<BookingRequest> bookingRequests;
 }

@@ -8,10 +8,10 @@ import org.hibernate.annotations.Nationalized;
 import java.util.List;
 import java.util.Set;
 
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder(toBuilder = true)
 @Entity
 @Table(name = "seat_types")
 public class SeatType {
